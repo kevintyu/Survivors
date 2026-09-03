@@ -1,29 +1,35 @@
 using Survivors.Enemies;
+using Survivors.Weapons.Definitions;
 using UnityEngine;
 
 namespace Survivors.Weapons
 {
     public sealed class ProjectileWeapon : WeaponBehaviour
     {
-        [SerializeField, Min(0.05f)] private float attackInterval = 1f;
-        [SerializeField, Min(0f)] private float damage = 10f;
-        [SerializeField, Min(0.1f)] private float projectileSpeed = 8f;
-        [SerializeField, Min(0.1f)] private float projectileLifetime = 3f;
-        [SerializeField, Min(0)] private int initialPoolSize = 8;
-
-        private Sprite projectileSprite;
         private ProjectilePool projectilePool;
         private float cooldownRemaining;
 
-        public void Configure(Sprite sprite)
-        {
-            projectileSprite = sprite;
-        }
+        // Runtime values are copied from the asset so gameplay never mutates shared content data.
+        private float damage;
+        private float attackInterval;
+        private int projectileCount;
+        private float projectileSpeed;
+        private float projectileLifetime;
+        private int piercingCount;
 
-        public override void Initialize(Transform owner)
+        public override void Initialize(Transform owner, WeaponDefinition definition)
         {
-            base.Initialize(owner);
-            projectilePool = new ProjectilePool(owner, projectileSprite, initialPoolSize);
+            base.Initialize(owner, definition);
+
+            var projectileDefinition = (ProjectileWeaponDefinition)definition;
+            damage = projectileDefinition.BaseDamage;
+            attackInterval = projectileDefinition.AttackInterval;
+            projectileCount = projectileDefinition.ProjectileCount;
+            projectileSpeed = projectileDefinition.ProjectileSpeed;
+            projectileLifetime = projectileDefinition.ProjectileLifetime;
+            piercingCount = projectileDefinition.PiercingCount;
+            projectilePool = new ProjectilePool(owner, projectileDefinition.ProjectileSprite,
+                projectileDefinition.ProjectileSize, projectileDefinition.InitialPoolSize);
             cooldownRemaining = 0f;
         }
 
@@ -41,10 +47,18 @@ namespace Survivors.Weapons
                 return;
             }
 
-            Vector2 direction = (target.transform.position - Owner.position).normalized;
-            var projectile = projectilePool.Get();
-            projectile.Launch(Owner.position, direction, damage, projectileSpeed,
-                projectileLifetime, projectilePool.Return);
+            Vector2 targetDirection = (target.transform.position - Owner.position).normalized;
+            const float spreadDegrees = 10f;
+
+            for (int i = 0; i < projectileCount; i++)
+            {
+                float offset = (i - (projectileCount - 1) * 0.5f) * spreadDegrees;
+                Vector2 direction = Quaternion.Euler(0f, 0f, offset) * targetDirection;
+                var projectile = projectilePool.Get();
+                projectile.Launch(Owner.position, direction, damage, projectileSpeed,
+                    projectileLifetime, piercingCount, projectilePool.Return);
+            }
+
             cooldownRemaining = attackInterval;
         }
     }

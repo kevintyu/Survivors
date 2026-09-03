@@ -20,4 +20,10 @@ The player automatically fires a yellow projectile at the nearest enemy once per
 
 After the enemy dies, a replacement spawns in a random direction from the player following a two-second delay. This is temporary prototype behavior; a data-driven spawn director will replace it in a later milestone.
 
+## Data-driven weapons
+
+Magic Bolt's identity, damage, attack interval, projectile count, speed, lifetime, size, piercing, and pool size are stored in `Assets/Resources/Weapons/MagicBolt.asset`. Runtime weapon components copy values from this shared definition and never modify the asset.
+
+Create additional projectile weapon definitions from `Assets > Create > Survivors > Weapons > Projectile Weapon`. Future area, orbit, and aura weapons will use their own behavior-specific definition types.
+
 The movement speed can be adjusted on the `PlayerMovement` component in the Inspector while the game is running. The runtime bootstrap is temporary scaffolding; once a proper gameplay scene and player prefab exist, it can be removed.

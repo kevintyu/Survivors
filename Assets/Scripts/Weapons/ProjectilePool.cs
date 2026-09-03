@@ -8,12 +8,14 @@ namespace Survivors.Weapons
         private readonly Stack<Projectile> available = new();
         private readonly Transform container;
         private readonly Sprite sprite;
+        private readonly float projectileSize;
 
-        public ProjectilePool(Transform owner, Sprite projectileSprite, int initialSize)
+        public ProjectilePool(Transform owner, Sprite projectileSprite, float size, int initialSize)
         {
             container = new GameObject("Projectile Pool").transform;
             container.SetParent(owner);
             sprite = projectileSprite;
+            projectileSize = size;
 
             for (int i = 0; i < initialSize; i++)
             {
@@ -37,7 +39,7 @@ namespace Survivors.Weapons
         {
             var projectileObject = new GameObject("Projectile");
             projectileObject.transform.SetParent(container);
-            projectileObject.transform.localScale = Vector3.one * 0.25f;
+            projectileObject.transform.localScale = Vector3.one * projectileSize;
 
             var renderer = projectileObject.AddComponent<SpriteRenderer>();
             renderer.sprite = sprite;

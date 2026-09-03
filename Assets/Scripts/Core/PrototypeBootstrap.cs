@@ -2,6 +2,7 @@ using Survivors.Player;
 using Survivors.Combat;
 using Survivors.Enemies;
 using Survivors.Weapons;
+using Survivors.Weapons.Definitions;
 using UnityEngine;
 
 namespace Survivors.Core
@@ -23,8 +24,16 @@ namespace Survivors.Core
 
             if (player.GetComponent<WeaponController>() == null)
             {
-                player.gameObject.AddComponent<ProjectileWeapon>().Configure(squareSprite);
-                player.gameObject.AddComponent<WeaponController>();
+                var weaponController = player.gameObject.AddComponent<WeaponController>();
+                var magicBolt = Resources.Load<ProjectileWeaponDefinition>("Weapons/MagicBolt");
+                if (magicBolt == null)
+                {
+                    Debug.LogError("Magic Bolt definition is missing from Resources/Weapons.");
+                }
+                else
+                {
+                    weaponController.Equip(magicBolt);
+                }
             }
 
             var spawner = Object.FindFirstObjectByType<PrototypeEnemySpawner>();

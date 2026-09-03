@@ -14,9 +14,11 @@ namespace Survivors.Weapons
         private float remainingLifetime;
         private Action<Projectile> returnToPool;
         private bool isActive;
+        private int remainingHits;
 
         public void Launch(Vector2 position, Vector2 travelDirection, float projectileDamage,
-            float projectileSpeed, float lifetime, Action<Projectile> returnAction)
+            float projectileSpeed, float lifetime, int piercingCount,
+            Action<Projectile> returnAction)
         {
             transform.SetParent(null, true);
             transform.position = position;
@@ -24,6 +26,7 @@ namespace Survivors.Weapons
             damage = projectileDamage;
             speed = projectileSpeed;
             remainingLifetime = lifetime;
+            remainingHits = piercingCount + 1;
             returnToPool = returnAction;
             isActive = true;
             gameObject.SetActive(true);
@@ -54,7 +57,11 @@ namespace Survivors.Weapons
             }
 
             damageable.TakeDamage(damage);
-            Release();
+            remainingHits--;
+            if (remainingHits <= 0)
+            {
+                Release();
+            }
         }
 
         private void Release()
