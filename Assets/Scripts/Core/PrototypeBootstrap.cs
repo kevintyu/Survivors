@@ -1,6 +1,7 @@
 using Survivors.Player;
 using Survivors.Combat;
 using Survivors.Enemies;
+using Survivors.Weapons;
 using UnityEngine;
 
 namespace Survivors.Core
@@ -18,10 +19,22 @@ namespace Survivors.Core
                 player = CreatePlayer();
             }
 
-            if (Object.FindFirstObjectByType<EnemyMovement>() == null)
+            var squareSprite = CreateSquareSprite();
+
+            if (player.GetComponent<WeaponController>() == null)
             {
-                CreateEnemy(player.transform);
+                player.gameObject.AddComponent<ProjectileWeapon>().Configure(squareSprite);
+                player.gameObject.AddComponent<WeaponController>();
             }
+
+            var spawner = Object.FindFirstObjectByType<PrototypeEnemySpawner>();
+            if (spawner == null)
+            {
+                spawner = player.gameObject.AddComponent<PrototypeEnemySpawner>();
+            }
+
+            spawner.Configure(player.transform, squareSprite);
+            spawner.SpawnImmediately();
         }
 
         private static PlayerMovement CreatePlayer()
@@ -41,26 +54,6 @@ namespace Survivors.Core
             playerObject.AddComponent<BoxCollider2D>();
             playerObject.AddComponent<Health>().Configure(100f, false);
             return playerObject.AddComponent<PlayerMovement>();
-        }
-
-        private static void CreateEnemy(Transform player)
-        {
-            var enemy = new GameObject("Enemy");
-            enemy.transform.position = new Vector3(4f, 0f, 0f);
-
-            var renderer = enemy.AddComponent<SpriteRenderer>();
-            renderer.sprite = CreateSquareSprite();
-            renderer.color = new Color(1f, 0.25f, 0.25f);
-
-            var body = enemy.AddComponent<Rigidbody2D>();
-            body.gravityScale = 0f;
-            body.freezeRotation = true;
-            body.interpolation = RigidbodyInterpolation2D.Interpolate;
-
-            enemy.AddComponent<BoxCollider2D>();
-            enemy.AddComponent<Health>().Configure(30f, true);
-            enemy.AddComponent<ContactDamage>().Configure(10f, 0.75f);
-            enemy.AddComponent<EnemyMovement>().SetTarget(player);
         }
 
         private static void CreateCameraIfNeeded()
