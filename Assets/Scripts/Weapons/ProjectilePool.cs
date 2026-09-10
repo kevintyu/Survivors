@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Survivors.Combat;
 using UnityEngine;
 
 namespace Survivors.Weapons
@@ -38,6 +39,7 @@ namespace Survivors.Weapons
         private Projectile CreateProjectile()
         {
             var projectileObject = new GameObject("Projectile");
+            projectileObject.layer = CombatLayers.PlayerProjectile;
             projectileObject.transform.SetParent(container);
             projectileObject.transform.localScale = Vector3.one * projectileSize;
 

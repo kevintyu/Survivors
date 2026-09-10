@@ -59,6 +59,7 @@ namespace Survivors.Enemies
             }
 
             var enemy = new GameObject("Enemy");
+            enemy.layer = CombatLayers.Enemy;
             enemy.transform.position = (Vector2)player.position + spawnDirection * spawnDistance;
 
             var renderer = enemy.AddComponent<SpriteRenderer>();
@@ -71,11 +72,14 @@ namespace Survivors.Enemies
             body.interpolation = RigidbodyInterpolation2D.Interpolate;
 
             enemy.AddComponent<BoxCollider2D>();
-            enemy.AddComponent<Health>().Configure(30f, true);
+            var health = enemy.AddComponent<Health>();
+            health.Configure(30f, true);
+            Hurtbox.Create(enemy, health, CombatFaction.Enemy, CombatLayers.Enemy, Vector2.one);
+            ContactHitbox.Create(enemy, 10f, 0.75f, CombatFaction.Player,
+                CombatLayers.EnemyContact, Vector2.one * 1.05f);
             enemy.AddComponent<WorldHealthBar>().Configure(
                 new Color(1f, 0.3f, 0.2f), new Vector2(0f, 0.7f));
             enemy.AddComponent<EnemyTarget>();
-            enemy.AddComponent<ContactDamage>().Configure(10f, 0.75f);
             enemy.AddComponent<EnemyMovement>().SetTarget(player);
         }
     }

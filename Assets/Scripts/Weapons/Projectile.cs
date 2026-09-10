@@ -1,6 +1,5 @@
 using System;
 using Survivors.Combat;
-using Survivors.Enemies;
 using UnityEngine;
 
 namespace Survivors.Weapons
@@ -50,13 +49,13 @@ namespace Survivors.Weapons
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (!isActive || !other.TryGetComponent<EnemyTarget>(out _) ||
-                !other.TryGetComponent<IDamageable>(out var damageable))
+            if (!isActive || !other.TryGetComponent<Hurtbox>(out var hurtbox) ||
+                hurtbox.Faction != CombatFaction.Enemy)
             {
                 return;
             }
 
-            damageable.TakeDamage(damage);
+            hurtbox.TakeDamage(damage);
             remainingHits--;
             if (remainingHits <= 0)
             {

@@ -14,6 +14,7 @@ namespace Survivors.Core
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void CreatePrototype()
         {
+            CombatLayers.ApplyCollisionRules();
             CreateCameraIfNeeded();
 
             var player = Object.FindFirstObjectByType<PlayerMovement>();
@@ -51,6 +52,7 @@ namespace Survivors.Core
         private static PlayerMovement CreatePlayer()
         {
             var playerObject = new GameObject("Player");
+            playerObject.layer = CombatLayers.Player;
             playerObject.transform.position = Vector3.zero;
 
             var renderer = playerObject.AddComponent<SpriteRenderer>();
@@ -64,7 +66,10 @@ namespace Survivors.Core
 
             playerObject.AddComponent<BoxCollider2D>();
             var stats = playerObject.AddComponent<CharacterStats>();
-            playerObject.AddComponent<Health>().Configure(stats.Get(StatType.MaximumHealth), false);
+            var health = playerObject.AddComponent<Health>();
+            health.Configure(stats.Get(StatType.MaximumHealth), false);
+            Hurtbox.Create(playerObject, health, CombatFaction.Player, CombatLayers.Player,
+                Vector2.one);
             playerObject.AddComponent<PlayerHealthStats>();
             playerObject.AddComponent<WorldHealthBar>().Configure(
                 new Color(0.2f, 0.9f, 0.3f), new Vector2(0f, 0.7f));

@@ -36,4 +36,8 @@ Runtime modifiers have a source ID and support flat, additive-percent, and multi
 
 The player and enemies display world-space health bars above their sprites. The bars subscribe to health-change events and use lightweight sprite renderers rather than creating a UI Canvas for every actor.
 
+## Combat collision
+
+Player and enemy body colliders occupy separate physics layers and do not physically collide, allowing the player to pass through crowds. Child hurtbox triggers receive attacks, enemy contact-hitbox triggers still damage the player, and player projectiles only damage enemy hurtboxes. Body collisions with the Default layer remain enabled for future walls and obstacles.
+
 The movement speed can be adjusted on the `PlayerMovement` component in the Inspector while the game is running. The runtime bootstrap is temporary scaffolding; once a proper gameplay scene and player prefab exist, it can be removed.
