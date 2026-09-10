@@ -1,4 +1,5 @@
 using Survivors.Enemies;
+using Survivors.Stats;
 using Survivors.Weapons.Definitions;
 using UnityEngine;
 
@@ -7,27 +8,17 @@ namespace Survivors.Weapons
     public sealed class ProjectileWeapon : WeaponBehaviour
     {
         private ProjectilePool projectilePool;
+        private CharacterStats stats;
         private float cooldownRemaining;
 
-        // Runtime values are copied from the asset so gameplay never mutates shared content data.
-        private float damage;
-        private float attackInterval;
-        private int projectileCount;
-        private float projectileSpeed;
-        private float projectileLifetime;
-        private int piercingCount;
+        private ProjectileWeaponDefinition projectileDefinition;
 
         public override void Initialize(Transform owner, WeaponDefinition definition)
         {
             base.Initialize(owner, definition);
 
-            var projectileDefinition = (ProjectileWeaponDefinition)definition;
-            damage = projectileDefinition.BaseDamage;
-            attackInterval = projectileDefinition.AttackInterval;
-            projectileCount = projectileDefinition.ProjectileCount;
-            projectileSpeed = projectileDefinition.ProjectileSpeed;
-            projectileLifetime = projectileDefinition.ProjectileLifetime;
-            piercingCount = projectileDefinition.PiercingCount;
+            projectileDefinition = (ProjectileWeaponDefinition)definition;
+            stats = owner.GetComponent<CharacterStats>();
             projectilePool = new ProjectilePool(owner, projectileDefinition.ProjectileSprite,
                 projectileDefinition.ProjectileSize, projectileDefinition.InitialPoolSize);
             cooldownRemaining = 0f;
@@ -48,6 +39,11 @@ namespace Survivors.Weapons
             }
 
             Vector2 targetDirection = (target.transform.position - Owner.position).normalized;
+            float damage = projectileDefinition.BaseDamage * stats.Get(StatType.DamageMultiplier);
+            float projectileSpeed = projectileDefinition.ProjectileSpeed *
+                stats.Get(StatType.ProjectileSpeedMultiplier);
+            int projectileCount = Mathf.Max(1, projectileDefinition.ProjectileCount +
+                Mathf.RoundToInt(stats.Get(StatType.ProjectileCountBonus)));
             const float spreadDegrees = 10f;
 
             for (int i = 0; i < projectileCount; i++)
@@ -56,10 +52,13 @@ namespace Survivors.Weapons
                 Vector2 direction = Quaternion.Euler(0f, 0f, offset) * targetDirection;
                 var projectile = projectilePool.Get();
                 projectile.Launch(Owner.position, direction, damage, projectileSpeed,
-                    projectileLifetime, piercingCount, projectilePool.Return);
+                    projectileDefinition.ProjectileLifetime, projectileDefinition.PiercingCount,
+                    projectilePool.Return);
             }
 
-            cooldownRemaining = attackInterval;
+            float cooldownReduction = stats.Get(StatType.CooldownReduction);
+            cooldownRemaining = Mathf.Max(0.05f,
+                projectileDefinition.AttackInterval * (1f - cooldownReduction));
         }
     }
 }

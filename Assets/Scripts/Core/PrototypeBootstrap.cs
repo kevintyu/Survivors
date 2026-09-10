@@ -3,6 +3,7 @@ using Survivors.Combat;
 using Survivors.Enemies;
 using Survivors.Weapons;
 using Survivors.Weapons.Definitions;
+using Survivors.Stats;
 using UnityEngine;
 
 namespace Survivors.Core
@@ -61,7 +62,9 @@ namespace Survivors.Core
             body.interpolation = RigidbodyInterpolation2D.Interpolate;
 
             playerObject.AddComponent<BoxCollider2D>();
-            playerObject.AddComponent<Health>().Configure(100f, false);
+            var stats = playerObject.AddComponent<CharacterStats>();
+            playerObject.AddComponent<Health>().Configure(stats.Get(StatType.MaximumHealth), false);
+            playerObject.AddComponent<PlayerHealthStats>();
             return playerObject.AddComponent<PlayerMovement>();
         }
 

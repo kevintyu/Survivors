@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using Survivors.Weapons.Definitions;
+using Survivors.Stats;
 using UnityEngine;
 
 namespace Survivors.Weapons
 {
+    [RequireComponent(typeof(CharacterStats))]
     public sealed class WeaponController : MonoBehaviour
     {
         [SerializeField] private WeaponDefinition[] startingWeapons = System.Array.Empty<WeaponDefinition>();

@@ -1,18 +1,19 @@
+using Survivors.Stats;
 using UnityEngine;
 
 namespace Survivors.Player
 {
-    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(Rigidbody2D), typeof(CharacterStats))]
     public sealed class PlayerMovement : MonoBehaviour
     {
-        [SerializeField, Min(0f)] private float moveSpeed = 5f;
-
         private Rigidbody2D body;
+        private CharacterStats stats;
         private Vector2 moveInput;
 
         private void Awake()
         {
             body = GetComponent<Rigidbody2D>();
+            stats = GetComponent<CharacterStats>();
             body.gravityScale = 0f;
             body.freezeRotation = true;
         }
@@ -28,6 +29,7 @@ namespace Survivors.Player
 
         private void FixedUpdate()
         {
+            float moveSpeed = stats.Get(StatType.MoveSpeed);
             body.MovePosition(body.position + moveInput * moveSpeed * Time.fixedDeltaTime);
         }
     }

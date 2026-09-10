@@ -29,6 +29,20 @@ namespace Survivors.Combat
             Changed?.Invoke(Current, maximumHealth);
         }
 
+        public void SetMaximumHealth(float newMaximumHealth, bool healByIncrease)
+        {
+            float previousMaximum = maximumHealth;
+            maximumHealth = Mathf.Max(1f, newMaximumHealth);
+
+            if (!IsDead && healByIncrease && maximumHealth > previousMaximum)
+            {
+                Current += maximumHealth - previousMaximum;
+            }
+
+            Current = Mathf.Clamp(Current, 0f, maximumHealth);
+            Changed?.Invoke(Current, maximumHealth);
+        }
+
         public void TakeDamage(float amount)
         {
             if (IsDead || amount <= 0f)

@@ -26,4 +26,10 @@ Magic Bolt's identity, damage, attack interval, projectile count, speed, lifetim
 
 Create additional projectile weapon definitions from `Assets > Create > Survivors > Weapons > Projectile Weapon`. Future area, orbit, and aura weapons will use their own behavior-specific definition types.
 
+## Character stats
+
+`CharacterStats` centrally calculates damage, movement speed, cooldown reduction, projectile speed, projectile count, and maximum health. Movement, weapons, and health read the final calculated values instead of maintaining their own character-wide bonuses.
+
+Runtime modifiers have a source ID and support flat, additive-percent, and multiplicative-percent operations. A future upgrade can replace one modifier or remove every modifier from its source without changing weapon assets.
+
 The movement speed can be adjusted on the `PlayerMovement` component in the Inspector while the game is running. The runtime bootstrap is temporary scaffolding; once a proper gameplay scene and player prefab exist, it can be removed.
