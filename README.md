@@ -32,4 +32,8 @@ Create additional projectile weapon definitions from `Assets > Create > Survivor
 
 Runtime modifiers have a source ID and support flat, additive-percent, and multiplicative-percent operations. A future upgrade can replace one modifier or remove every modifier from its source without changing weapon assets.
 
+## Health bars
+
+The player and enemies display world-space health bars above their sprites. The bars subscribe to health-change events and use lightweight sprite renderers rather than creating a UI Canvas for every actor.
+
 The movement speed can be adjusted on the `PlayerMovement` component in the Inspector while the game is running. The runtime bootstrap is temporary scaffolding; once a proper gameplay scene and player prefab exist, it can be removed.

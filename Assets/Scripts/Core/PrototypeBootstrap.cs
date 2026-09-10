@@ -4,6 +4,7 @@ using Survivors.Enemies;
 using Survivors.Weapons;
 using Survivors.Weapons.Definitions;
 using Survivors.Stats;
+using Survivors.UI;
 using UnityEngine;
 
 namespace Survivors.Core
@@ -65,6 +66,8 @@ namespace Survivors.Core
             var stats = playerObject.AddComponent<CharacterStats>();
             playerObject.AddComponent<Health>().Configure(stats.Get(StatType.MaximumHealth), false);
             playerObject.AddComponent<PlayerHealthStats>();
+            playerObject.AddComponent<WorldHealthBar>().Configure(
+                new Color(0.2f, 0.9f, 0.3f), new Vector2(0f, 0.7f));
             return playerObject.AddComponent<PlayerMovement>();
         }
 

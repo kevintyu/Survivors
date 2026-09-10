@@ -1,4 +1,5 @@
 using Survivors.Combat;
+using Survivors.UI;
 using UnityEngine;
 
 namespace Survivors.Enemies
@@ -71,6 +72,8 @@ namespace Survivors.Enemies
 
             enemy.AddComponent<BoxCollider2D>();
             enemy.AddComponent<Health>().Configure(30f, true);
+            enemy.AddComponent<WorldHealthBar>().Configure(
+                new Color(1f, 0.3f, 0.2f), new Vector2(0f, 0.7f));
             enemy.AddComponent<EnemyTarget>();
             enemy.AddComponent<ContactDamage>().Configure(10f, 0.75f);
             enemy.AddComponent<EnemyMovement>().SetTarget(player);
