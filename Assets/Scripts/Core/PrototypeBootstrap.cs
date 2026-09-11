@@ -5,6 +5,8 @@ using Survivors.Weapons;
 using Survivors.Weapons.Definitions;
 using Survivors.Stats;
 using Survivors.UI;
+using Survivors.Pickups;
+using Survivors.Progression;
 using UnityEngine;
 
 namespace Survivors.Core
@@ -24,6 +26,13 @@ namespace Survivors.Core
             }
 
             var squareSprite = CreateSquareSprite();
+
+            var gemPool = player.GetComponent<ExperienceGemPool>();
+            if (gemPool == null)
+            {
+                gemPool = player.gameObject.AddComponent<ExperienceGemPool>();
+                gemPool.Configure(squareSprite);
+            }
 
             if (player.GetComponent<WeaponController>() == null)
             {
@@ -45,7 +54,7 @@ namespace Survivors.Core
                 spawner = player.gameObject.AddComponent<PrototypeEnemySpawner>();
             }
 
-            spawner.Configure(player.transform, squareSprite);
+            spawner.Configure(player.transform, squareSprite, gemPool);
             spawner.SpawnImmediately();
         }
 
@@ -68,8 +77,10 @@ namespace Survivors.Core
             var stats = playerObject.AddComponent<CharacterStats>();
             var health = playerObject.AddComponent<Health>();
             health.Configure(stats.Get(StatType.MaximumHealth), false);
+            var experience = playerObject.AddComponent<PlayerExperience>();
             Hurtbox.Create(playerObject, health, CombatFaction.Player, CombatLayers.Player,
                 Vector2.one);
+            ExperienceCollector.Create(playerObject, experience, stats, CombatLayers.Player);
             playerObject.AddComponent<PlayerHealthStats>();
             playerObject.AddComponent<WorldHealthBar>().Configure(
                 new Color(0.2f, 0.9f, 0.3f), new Vector2(0f, 0.7f));

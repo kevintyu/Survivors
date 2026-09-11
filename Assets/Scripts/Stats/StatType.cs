@@ -7,6 +7,7 @@ namespace Survivors.Stats
         CooldownReduction,
         ProjectileSpeedMultiplier,
         ProjectileCountBonus,
-        MaximumHealth
+        MaximumHealth,
+        PickupRadius
     }
 }

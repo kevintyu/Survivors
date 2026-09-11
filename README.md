@@ -40,4 +40,8 @@ The player and enemies display world-space health bars above their sprites. The 
 
 Player and enemy body colliders occupy separate physics layers and do not physically collide, allowing the player to pass through crowds. Child hurtbox triggers receive attacks, enemy contact-hitbox triggers still damage the player, and player projectiles only damage enemy hurtboxes. Body collisions with the Default layer remain enabled for future walls and obstacles.
 
+## Experience and leveling
+
+Enemies drop pooled cyan experience gems worth 5 XP. The player's pickup-radius trigger collects nearby gems, and its radius is controlled by the central stat system. Level requirements use `ceil(10 × level^1.5)`. XP progress and level-up events are ready for the upgrade-choice UI in the next milestone.
+
 The movement speed can be adjusted on the `PlayerMovement` component in the Inspector while the game is running. The runtime bootstrap is temporary scaffolding; once a proper gameplay scene and player prefab exist, it can be removed.

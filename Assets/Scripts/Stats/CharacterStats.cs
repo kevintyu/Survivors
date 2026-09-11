@@ -13,6 +13,7 @@ namespace Survivors.Stats
         [SerializeField, Min(0.1f)] private float baseProjectileSpeedMultiplier = 1f;
         [SerializeField] private float baseProjectileCountBonus;
         [SerializeField, Min(1f)] private float baseMaximumHealth = 100f;
+        [SerializeField, Min(0.1f)] private float basePickupRadius = 1.25f;
 
         private readonly List<StatModifier> modifiers = new();
         private readonly Dictionary<StatType, float> finalValues = new();
@@ -105,6 +106,7 @@ namespace Survivors.Stats
                 StatType.ProjectileSpeedMultiplier => baseProjectileSpeedMultiplier,
                 StatType.ProjectileCountBonus => baseProjectileCountBonus,
                 StatType.MaximumHealth => baseMaximumHealth,
+                StatType.PickupRadius => basePickupRadius,
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
             };
         }
@@ -119,6 +121,7 @@ namespace Survivors.Stats
                 StatType.ProjectileSpeedMultiplier => Mathf.Max(0.1f, value),
                 StatType.ProjectileCountBonus => value,
                 StatType.MaximumHealth => Mathf.Max(1f, value),
+                StatType.PickupRadius => Mathf.Max(0.1f, value),
                 _ => value
             };
         }
